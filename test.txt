@@ -1,6 +1,7 @@
 package test;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -41,12 +42,38 @@ public class test extends JFrame implements ActionListener{
 		public void paint(Graphics g) {
 			// map
 			g.drawImage(img, 0, 0, null);
+			
 			// 진원지
-			if(session==0) {
-				g.fillOval(0, 0, 0, 0);
-			}
-			if(session==1)
+			if(session==1) {
+				g.setColor(Color.RED);
 				g.fillOval(x, y, 20, 20);
+				System.out.printf("지원지 : %d %d", x,y);
+			}
+			// 지역 좌표
+				// 서울특별시
+				g.setColor(Color.BLUE);
+				g.fillOval(220, 180, 15, 15);
+				
+				// 경기도
+				g.setColor(Color.BLUE);
+				g.fillOval(250, 240, 15, 15);
+				
+				// 강원도
+				g.setColor(Color.BLUE);
+				g.fillOval(380, 150, 15, 15);
+				
+				// 충청도
+				g.setColor(Color.BLUE);
+				g.fillOval(270, 340, 15, 15);
+				
+				// 전라도
+				g.setColor(Color.BLUE);
+				g.fillOval(220, 520, 15, 15);
+				
+				// 경상도
+				g.setColor(Color.BLUE);
+				g.fillOval(430, 430, 15, 15);				
+				
 		}
 		// mpa.jpg
 		public Dimension getPreferredSize() {
@@ -64,8 +91,8 @@ public class test extends JFrame implements ActionListener{
 		Random ran = new Random();
 		if(++session>=1) {
 			x = ran.nextInt(600);
-			y = ran.nextInt(800);			
-		}		
+			y = ran.nextInt(800);	
+		}
 		repaint();
 	}
 	
