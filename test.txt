@@ -44,7 +44,7 @@ public class test extends JFrame implements ActionListener{
 			g.drawImage(img, 0, 0, null);
 			
 			// 진원지
-			if(session==1) {
+			if(session>=1) {
 				g.setColor(Color.RED);
 				g.fillOval(x, y, 20, 20);
 				System.out.printf("지원지 : %d %d", x,y);
@@ -90,7 +90,7 @@ public class test extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		Random ran = new Random();
 		if(++session>=1) {
-			x = ran.nextInt(600);
+			x = ran.nextInt(20)+580;
 			y = ran.nextInt(800);	
 		}
 		repaint();
