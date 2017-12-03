@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 //frame 영역
 public class test extends JFrame implements ActionListener{
 	BufferedImage img = null;
-	public int x,y,session=0;
+	public int x,y,Earthquake=0;
 	public test() {
 		setTitle("dsfa");
 		try {
@@ -44,7 +44,7 @@ public class test extends JFrame implements ActionListener{
 			g.drawImage(img, 0, 0, null);
 			
 			// 진원지
-			if(session>=1) {
+			if(Earthquake>=1) {
 				g.setColor(Color.RED);
 				g.fillOval(x, y, 20, 20);
 				System.out.printf("지원지 : %d %d", x,y);
@@ -85,15 +85,17 @@ public class test extends JFrame implements ActionListener{
 		}
 	}
 	
-	// Earthquake Occur가 눌렸을  때 액션
+	// Earthquake Occur가 눌렸을 때 액션
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Random ran = new Random();
-		if(++session>=1) {
+		if(++Earthquake>=1) {
 			x = ran.nextInt(20)+580;
 			y = ran.nextInt(800);	
 		}
 		repaint();
+		// 바다 동,서,남해안에 대한 랜덤
+		session = ran.nextInt(2)
 	}
 	
 	public static void main(String[] args) {
