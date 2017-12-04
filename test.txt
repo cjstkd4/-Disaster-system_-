@@ -50,30 +50,31 @@ public class test extends JFrame implements ActionListener{
 				g.fillOval(x, y, 20, 20);
 				System.out.printf("지원지 : %d %d", x,y);
 			}
-			// 지역 좌표
+			// 지역 좌표 180 -> 145 : 35
+			
 				// 서울특별시
 				g.setColor(Color.BLUE);
-				g.fillOval(220, 180, 15, 15);
+				g.fillOval(220, 145, 15, 15);
 				
 				// 경기도
 				g.setColor(Color.BLUE);
-				g.fillOval(250, 240, 15, 15);
+				g.fillOval(250, 205, 15, 15);
 				
 				// 강원도
 				g.setColor(Color.BLUE);
-				g.fillOval(380, 150, 15, 15);
+				g.fillOval(380, 115, 15, 15);
 				
 				// 충청도
 				g.setColor(Color.BLUE);
-				g.fillOval(270, 340, 15, 15);
+				g.fillOval(270, 305, 15, 15);
 				
 				// 전라도
 				g.setColor(Color.BLUE);
-				g.fillOval(220, 520, 15, 15);
+				g.fillOval(220, 485, 15, 15);
 				
 				// 경상도
 				g.setColor(Color.BLUE);
-				g.fillOval(430, 430, 15, 15);
+				g.fillOval(430, 395, 15, 15);
 				
 				/* 
 				 * 끝 점 확인 : (0, 0) ~ (605, 763)
