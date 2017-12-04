@@ -1,4 +1,4 @@
-package test;
+package disaster;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,12 +18,12 @@ import javax.swing.JPanel;
 //frame 영역
 public class test extends JFrame implements ActionListener{
 	BufferedImage img = null;
-	public int x,y,Earthquake=0;
+	public int x, y, session, Earthquake=0;
 	public test() {
 		setTitle("dsfa");
 		try {
 			// 사진은 아래 사진을 이용할것! 
-			img = ImageIO.read(new File("C:\\Users\\NET-04\\Desktop\\map.jpg"));
+			img = ImageIO.read(new File("C:\\Users\\pcs60\\Desktop\\map.jpg"));
 		}catch(IOException e) {
 			System.out.print("no img");
 			System.exit(0);
@@ -40,6 +40,7 @@ public class test extends JFrame implements ActionListener{
 	// panel 영역
 	class MyPanel extends JPanel{
 		public void paint(Graphics g) {
+			// 끝 점 확인 ( x = 605 y = 706)
 			// map
 			g.drawImage(img, 0, 0, null);
 			
@@ -72,8 +73,27 @@ public class test extends JFrame implements ActionListener{
 				
 				// 경상도
 				g.setColor(Color.BLUE);
-				g.fillOval(430, 430, 15, 15);				
+				g.fillOval(430, 430, 15, 15);
 				
+				/* 
+				 * 끝 점 확인 : (0, 0) ~ (605, 763)
+				--- 동해 --- (550, 0) ~ (605, 763)
+				g.fillOval(550, 0, 20, 20);
+				g.fillOval(605, 0, 20, 20);
+				g.fillOval(550, 763, 20, 20);
+				g.fillOval(605, 763, 20, 20);
+				--- 서해 --- (0, 0) ~ (50, 763)
+				g.fillOval(0, 0, 20, 20);
+				g.fillOval(50, 0, 20, 20);
+				g.fillOval(0, 763, 20, 20);
+				g.fillOval(50, 763, 20, 20);
+				
+				--- 남해 --- (51, 675) ~ (549, 763)
+				g.fillOval(51, 675, 20, 20);
+				g.fillOval(549, 675, 20, 20);
+				g.fillOval(549, 763, 20, 20);
+				g.fillOval(51, 763, 20, 20);
+				*/
 		}
 		// mpa.jpg
 		public Dimension getPreferredSize() {
@@ -86,16 +106,26 @@ public class test extends JFrame implements ActionListener{
 	}
 	
 	// Earthquake Occur가 눌렸을 때 액션
+	// 끝 점 확인 ( x = 605 y = 706)
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Random ran = new Random();
+		session = ran.nextInt(3);
 		if(++Earthquake>=1) {
-			x = ran.nextInt(20)+580;
-			y = ran.nextInt(800);	
+			//session이 0인경우 서해, 1인경우 동해, 2인 경우 남해
+			if(session == 0) {
+				x = ran.nextInt(50);
+				y = ran.nextInt(763);	
+			}else if (session == 1) {
+				x = ran.nextInt(55)+550;
+				y = ran.nextInt(763);	
+			}else {
+				x = ran.nextInt(498)+51;
+				y = ran.nextInt(88)+675;	
+			}
 		}
+		System.out.println("\n"+session);
 		repaint();
-		// 바다 동,서,남해안에 대한 랜덤
-		session = ran.nextInt(2)
 	}
 	
 	public static void main(String[] args) {
