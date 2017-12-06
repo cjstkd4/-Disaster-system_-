@@ -125,7 +125,14 @@ public class test extends JFrame implements ActionListener{
 				y = ran.nextInt(88)+675;	
 			}
 		}
-		System.out.println("\n"+session);
+		if(session == 0) {
+			System.out.println("서해\n");
+		}else if(session == 1) {
+			System.out.println("동해\n");
+		}else {
+			System.out.println("남해\n");
+		}
+		
 		repaint();
 	}
 	
