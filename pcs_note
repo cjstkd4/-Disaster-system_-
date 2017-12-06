@@ -25,7 +25,7 @@ public class test extends JFrame implements ActionListener, MouseListener{
 	private int x, y, session, Earthquake=0;
 	private JButton b1,b2,b3,b4,b5,b6,bt;
 	private double v;
-	private String wave;
+	private String wave, sea;
 	
 	public test() {
 		setTitle("dsfa");
@@ -66,33 +66,36 @@ public class test extends JFrame implements ActionListener, MouseListener{
 				}
 				// random을 통해서 출력된 session으로 3바다를 출력
 				if(session == 0) {
+					sea = "서해";
 					System.out.println("진원지 : 서해");
 				}else if(session == 1) {
+					sea = "동해";
 					System.out.println("진원지 : 동해");
 				}else {
+					sea = "남해";
 					System.out.println("진원지 : 남해");
 				}
 				// 지진 값 출력
 				System.out.format("V : %.2f\n",v);
 				// 강도 값 출력
 				if(v<0.07) {
-					wave = "2.0 ~ 3.4";
+					wave = "0.0 ~ 0.8";
 				}else if(0.07 <= v && v < 0.25) {
-					wave = "3.5 ~ 4.2";
+					wave = "0.9 ~ 1.6";
 				}else if(0.25 <= v && v < 1.9) {
-					wave = "4.3 ~ 4.8";
+					wave = "1.7 ~ 2.5";
 				}else if(1.9 <= v && v < 5.8) {
-					wave = "4.9 ~ 5.4";
+					wave = "2.6 ~ 3.4";
 				}else if(5.8 <= v && v < 15.0) {
-					wave = "5.5 ~ 6.1";
+					wave = "3.5 ~ 4.3";
 				}else if(15.0 <= v && v < 30.0) {
-					wave = "6.2 ~ 6.9";
+					wave = "4.4 ~ 5.2";
 				}else if(30.0 <= v && v < 83.0) {
-					wave = "7.0 ~ 7.3";
+					wave = "5.3 ~ 6.1";
 				}else if(83.0 <= v && v < 160.0) {
-					wave = "7.4 ~ 7.9";
+					wave = "6.2 ~ 7.0";
 				}else {
-					wave = "8.0 이상";
+					wave = "7.0 이상";
 				}
 				System.out.println("강도 : "+wave);
 				repaint();
@@ -119,7 +122,7 @@ public class test extends JFrame implements ActionListener, MouseListener{
 			// 마우스가 올라갈때
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "좌표 = xsadsadsadsadasd");
+				JOptionPane.showMessageDialog(null, sea+"에서 강도 "+wave+"가 발생하였습니다.","간단한 지진 알람" , JOptionPane.WARNING_MESSAGE);
 			}
 			// 마우스로 클릭할 때
 			@Override
