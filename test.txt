@@ -23,7 +23,7 @@ public class test extends JFrame implements ActionListener{
 		setTitle("dsfa");
 		try {
 			// 사진은 아래 사진을 이용할것! 
-			img = ImageIO.read(new File("C:\\Users\\pcs60\\Desktop\\map.jpg"));
+			img = ImageIO.read(new File("C:\\Users\\NET-03\\Desktop\\map.jpg"));
 		}catch(IOException e) {
 			System.out.print("no img");
 			System.exit(0);
@@ -48,7 +48,7 @@ public class test extends JFrame implements ActionListener{
 			if(Earthquake>=1) {
 				g.setColor(Color.RED);
 				g.fillOval(x, y, 20, 20);
-				System.out.printf("지원지 : %d %d", x,y);
+				System.out.printf("지원지 : %d %d\n\n", x,y);
 			}
 			// 지역 좌표 180 -> 145 : 35
 			
@@ -126,11 +126,11 @@ public class test extends JFrame implements ActionListener{
 			}
 		}
 		if(session == 0) {
-			System.out.println("서해\n");
+			System.out.println("서해");
 		}else if(session == 1) {
-			System.out.println("동해\n");
+			System.out.println("동해");
 		}else {
-			System.out.println("남해\n");
+			System.out.println("남해");
 		}
 		
 		repaint();
