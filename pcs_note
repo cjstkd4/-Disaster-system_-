@@ -31,7 +31,7 @@ public class test extends JFrame implements ActionListener, MouseListener{
 		setTitle("dsfa");
 		try {
 			// 사진은 아래 사진을 이용할것! 
-			img = ImageIO.read(new File("C:\\Users\\NET-03\\Desktop\\map.jpg"));
+			img = ImageIO.read(new File("C:\\Users\\NET-02\\Desktop\\map.jpg"));
 		}catch(IOException e) {
 			System.out.print("no img");
 			System.exit(0);
@@ -61,8 +61,6 @@ public class test extends JFrame implements ActionListener, MouseListener{
 						x = ran.nextInt(498)+51;
 						y = ran.nextInt(88)+675;	
 					}
-					// 지진 강도
-		
 				}
 				// random을 통해서 출력된 session으로 3바다를 출력
 				if(session == 0) {
@@ -250,6 +248,20 @@ public class test extends JFrame implements ActionListener, MouseListener{
 			if(Earthquake>=1) {
 				g.setColor(Color.RED);
 				g.fillOval(x, y, 20, 20);
+				// 레이더
+				g.setColor(Color.RED);
+				g.drawOval(x-65, y-66, 150, 150);
+				g.drawOval(x-140,y-141, 300, 300);
+				g.drawOval(x-215,y-216, 450, 450);
+				g.drawOval(x-290,y-291, 600, 600);
+				g.drawOval(x-365,y-366, 750, 750);
+				g.drawOval(x-440,y-441, 900, 900);
+				g.drawOval(x-515,y-516, 1050, 1050);
+				g.drawOval(x-590,y-591, 1200, 1200);
+				g.drawOval(x-665,y-666, 1350, 1350);
+				g.drawOval(x-740,y-741, 1500, 1500);
+				g.drawOval(x-815,y-816, 1650, 1650);
+				
 				System.out.printf("지원지 : %d %d\n\n", x,y);
 			}
 			// 서울특별시
