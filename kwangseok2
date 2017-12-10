@@ -1,0 +1,84 @@
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
+public class SecondFrame extends JFrame{
+	private JLabel powerLabel;				//규모 레이블
+	private JTextField powerTextField;		//규모 텍스트필드
+	private JButton powerButton;			//규모 버튼
+	public String powerStr;			//규모가 입력된 텍스트
+
+	public SecondFrame() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		//창닫기
+		setTitle("지진 발생");
+		setLocation(750,200);
+		setSize(350,150);
+		setLayout(null);		//절대위치
+		setVisible(true);
+
+		this.powerLabel = new JLabel("규모 입력:");
+		this.powerTextField = new JTextField("");
+		this.powerButton = new JButton("확인");
+
+		add(this.powerLabel);
+		add(this.powerTextField);
+		add(this.powerButton);
+
+		powerLabel.setBounds(20, 40, 70, 25);
+		powerTextField.setBounds(85, 40, 150, 25);
+		powerButton.setBounds(240, 40, 60, 25);
+		//getContentPane().setBackground(Color.white);
+
+		powerTextField.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+
+				if(c == '.' || c == '\b') {		//점과 스페이스는 가능하도록
+					;
+				}
+
+				else if(!Character.isDigit(c)) {		//숫자만 입력되도록
+					e.consume();
+					JOptionPane.showMessageDialog(null,"숫자만 입력해주세요.");
+					return;
+				}				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {}
+
+			@Override
+			public void keyPressed(KeyEvent e) {}
+		});
+
+		powerButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				powerStr = powerTextField.getText();
+				if(powerStr == null) {
+					JOptionPane.showMessageDialog(null,"규모를 입력해주세요.");
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "규모는 " + powerStr +"입니다.");
+					disaster2.frameFlag = 1;		//다시 프레임을 켤 수 있도록
+					dispose();
+				}
+			}
+
+		});
+	}
+
+	/*public static void main(String[] args) {
+		SecondFrame sf = new SecondFrame();
+	}*/
+}
