@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 public class disaster2 extends JFrame{
 	BufferedImage img = null;
 	public static int x, y, earthquake = 0;
+	public static double calcstreet;
 	public static int frameFlag = 0;		//frameFlag : 프레임을 1개만 생성해주기위한 플래그
 	private JButton bt;			//지진 발생 버튼
 	private JLabel redLabel, blueLabel, blackLabel;		//원에 대한 설명 레이블
@@ -162,41 +163,31 @@ public class disaster2 extends JFrame{
 					// 4방위
 					if( x < area[i][0] && (-50<=result2 && result2<=50 )) {
 						fourway = "서쪽";
-						System.out.println(fourway);
-						
+						System.out.println(fourway);						
 					} else if( x > area[i][0] && (-50<=result2 && result2<=50)){
 						fourway = "동쪽";
-						System.out.println(fourway);
-						
+						System.out.println(fourway);						
 					} else if(y < area[i][1] && (-50<=result1 && result1<=50 )) {
 						fourway = "북쪽";
-						System.out.println(fourway);
-						
+						System.out.println(fourway);						
 					} else if(y>area[i][1]  && (-50<=result1 && result1<=50 )){
 						fourway = "남쪽";
 						System.out.println(fourway);
 					} else if( x < area[i][0] && y < area[i][1] ) {
 						fourway = "서북쪽";
-						System.out.println(fourway);
-						
+						System.out.println(fourway);						
 					} else if(  x < area[i][0] && y>area[i][1] ) {
 						fourway = "서남쪽";
-						System.out.println(fourway);
-						
+						System.out.println(fourway);						
 					} else if(  x > area[i][0]&& y < area[i][1] )  {
 						fourway = "동북쪽";
-						System.out.println(fourway);
-						
+						System.out.println(fourway);						
 					} else if( x > area[i][0] && y>area[i][1])  {
 						fourway = "동남쪽";
-						System.out.println(fourway);
-						
+						System.out.println(fourway);						
 					}
-					
-					
 					System.out.println("----------------");
 				}*/
-				
 				//SecondFrame.java에 들어가는 4방위
 				double result1 = x - area[shortArea][0];
 				double result2 = y - area[shortArea][1];
@@ -217,6 +208,9 @@ public class disaster2 extends JFrame{
 				} else if( x > area[shortArea][0] && y>area[shortArea][1])  {
 					calcFourway = "동남쪽";
 				}
+				// 거리 계산
+				calcDistance = Math.pow(x-area[shortArea][0], 2) + Math.pow(y-area[shortArea][1], 2);
+				calcstreet = calcDistance / 100;
 			}
 
 			// 서울특별시
