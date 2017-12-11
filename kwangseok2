@@ -1,8 +1,9 @@
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -67,21 +68,22 @@ public class SecondFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				powerStr = powerTextField.getText();
+				long time = System.currentTimeMillis();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 aa hh시 mm분 ");
+				String str = sdf.format(new Date(time));
+				
 				if(powerStr.equals("")) {
 					JOptionPane.showMessageDialog(null,"규모를 입력해주세요.");
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "규모는 " + powerStr +"입니다.");
+					JOptionPane.showMessageDialog(null, "규모는 " + powerStr +"입니다.", "규모 메시지 창", JOptionPane.WARNING_MESSAGE, null);
 					disaster2.frameFlag = 1;		//다시 프레임을 켤 수 있도록
-					JOptionPane.showMessageDialog(null, areaName[disaster2.shortArea] + " 근처에서 지진이 발생하였습니다.");
+					JOptionPane.showMessageDialog(null, str+areaName[disaster2.shortArea] +"지역 "+ disaster2.calcFourway + " 00 km에서 규모 " + powerStr + 
+							" 지진이\n발생햇습니다. 여진 대비 TV, 라디오등 재난 방속 청취 바랍니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
 					dispose();
 				}
 			}
 
 		});
 	}
-
-	/*public static void main(String[] args) {
-		SecondFrame sf = new SecondFrame();
-	}*/
 }
