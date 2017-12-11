@@ -6,21 +6,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class disaster2 extends JFrame{
 	BufferedImage img = null;
 	private int x, y, earthquake = 0;
 	public static int frameFlag = 0;		//frameFlag : 프레임을 1개만 생성해주기위한 플래그
-	private JButton bt;
-	/*private JLabel powerLabel;				//강도 레이블
+	private JButton bt;			//지진 발생 버튼
+	private JLabel redLabel, blueLabel, blackLabel;		//원에 대한 설명 레이블
+	private JPanel pan;
+	String [][] location;		//엑셀에서 지역에 대한 좌표 정보를 받을 배열
+	/*private JLabel powerLabel;			//강도 레이블
 	private JTextField powerTextField;		//강도 텍스트필드
 	private JButton powerButton;			//강도 버튼
 	 */	
@@ -31,6 +41,7 @@ public class disaster2 extends JFrame{
 		setBounds(100, 100, 600, 600);
 		setVisible(true);
 		frameFlag = 1;
+		location = new String[180][3];
 
 		try {
 			// 사진은 아래 사진을 이용할것! 
@@ -40,9 +51,89 @@ public class disaster2 extends JFrame{
 			System.exit(0);
 		}
 
+		//엑셀파일 가져오기
+		XSSFWorkbook workbook = null;
+		XSSFSheet sheet = null;
+		XSSFRow row = null;
+		XSSFCell cell = null;
+
+		try
+		{
+			workbook = new XSSFWorkbook( new FileInputStream( new File("C:\\Users\\DB\\Desktop\\disaster.xlsx")));
+
+			if( workbook != null)
+			{
+				sheet = workbook.getSheetAt( 0);
+
+				if( sheet != null)
+				{
+					//기록물철의 경우 실제 데이터가 시작되는 Row지정
+					int nRowStartIndex = 0;
+					//기록물철의 경우 실제 데이터가 끝 Row지정
+					int nRowEndIndex = sheet.getLastRowNum();
+
+					//기록물철의 경우 실제 데이터가 시작되는 Column지정
+					int nColumnStartIndex = 0;
+					//기록물철의 경우 실제 데이터가 끝나는 Column지정
+					int nColumnEndIndex = sheet.getRow(2).getLastCellNum();
+
+					String szValue = "";
+
+					for( int i = nRowStartIndex; i <= nRowEndIndex ; i++)
+					{
+						row  = sheet.getRow( i);
+
+						for( int nColumn = nColumnStartIndex; nColumn <= nColumnEndIndex ; nColumn++)
+						{
+							cell = row.getCell(( short ) nColumn);
+
+							if( cell == null)
+							{
+								continue;
+							}
+							if( cell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC)
+							{
+								szValue = String.valueOf( cell.getNumericCellValue());
+							}
+							else
+							{
+								szValue = cell.getStringCellValue();
+							}
+
+							location[i][nColumn] = szValue;
+							System.out.print(location[i][nColumn]);
+							//System.out.print(szValue);
+							System.out.print("\t" );
+						}
+						System.out.println();
+					}
+				}
+				else
+				{
+					System.out.println( "Sheet is null!!" );
+				}
+			}
+			else
+			{
+				System.out.println( "WorkBook is null!!" );
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
 		//지진 발생 버튼 (borderLayout을 이용)
 		add(new MyPanel(), BorderLayout.CENTER);
 		bt = new JButton("Earthquake Occur");
+		pan = new JPanel();
+		redLabel = new JLabel("● - 진원지          ");
+		blueLabel = new JLabel("● - 지역          ");
+		blackLabel = new JLabel("● - 지진관측소");
+
+		redLabel.setForeground(Color.RED);
+		blueLabel.setForeground(Color.BLUE);
+		blackLabel.setForeground(Color.BLACK);
+
 		bt.addActionListener(new ActionListener() {		//지진 발생 버튼 클릭 시
 			// Earthquake Occur가 눌렸을 때 액션
 			// 끝 점 확인 ( x = 628 y = 785)
@@ -54,12 +145,17 @@ public class disaster2 extends JFrame{
 				if(frameFlag == 1) {
 					SecondFrame sf = new SecondFrame();
 					repaint();
+					distance();//거리 계산 함수 호출
 					frameFlag = 0;		//새로운 프레임 재생성 방지.
 				}
-				
+
 			}
 		});
 		add(bt, BorderLayout.SOUTH);
+		pan.add(redLabel);
+		pan.add(blueLabel);
+		pan.add(blackLabel);
+		add(pan, BorderLayout.NORTH);
 		pack();
 
 	}
@@ -86,8 +182,21 @@ public class disaster2 extends JFrame{
 				y = ran.nextInt(height-90);
 
 				g.setColor(Color.RED);
-				g.fillOval(x, y, 20, 20);
-				//System.out.printf("진원지 : %d %d\n\n", x,y);
+				g.fillOval(x, y, 20, 20);				
+				System.out.printf("진원지 : %d %d\n\n", x,y);
+				// 레이더
+				g.setColor(Color.RED);
+				g.drawOval(x-65, y-66, 150, 150);
+				g.drawOval(x-140,y-141, 300, 300);
+				g.drawOval(x-215,y-216, 450, 450);
+				g.drawOval(x-290,y-291, 600, 600);
+				g.drawOval(x-365,y-366, 750, 750);
+				g.drawOval(x-440,y-441, 900, 900);
+				g.drawOval(x-515,y-516, 1050, 1050);
+				g.drawOval(x-590,y-591, 1200, 1200);
+				g.drawOval(x-665,y-666, 1350, 1350);
+				g.drawOval(x-740,y-741, 1500, 1500);
+				g.drawOval(x-815,y-816, 1650, 1650);
 			}
 
 			// 서울특별시
@@ -116,27 +225,31 @@ public class disaster2 extends JFrame{
 		}
 	}
 
-	/*public void newFrame() {		//새로운 화면 생성
-		JFrame secondFrame = new JFrame();		//두번째 창 생성
-		secondFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		//창닫기
-		secondFrame.setTitle("지진 발생");
-		secondFrame.setLocation(750,200);
-		secondFrame.setSize(350,300);
-		//secondFrame.getContentPane().setBackground(Color.pink);
-		secondFrame.setVisible(true);
-
-		this.powerLabel = new JLabel("강도 :");
-		this.powerTextField = new JTextField("");
-		this.powerButton = new JButton("확인");
-
-		add(this.powerLabel);
-		add(this.powerTextField);
-		add(this.powerButton);
-
-		powerLabel.setBounds(20, 40, 70, 25);
-		powerTextField.setBounds(85, 40, 150, 25);
-		powerButton.setBounds(240, 40, 60, 25);
-	}*/
+	public void distance() {		//진원지와 도시 사이 거리계산
+		//진원지의 좌표(x,y)
+		//Math.pow(3, 2)	//3의 2제곱 즉, 9
+		//순서대로 서울특별시, 경기도, 강원도, 충청도, 전라도, 경상도
+		double [][]area = { {220, 145}, {250, 205}, {380, 115}, {270, 305}, {220, 485}, {430, 395} };
+		double calcDistance, result, temp = 0;
+		int shortArea = 0;		//가장 짧은 거리의 도시
+		String []areaName = {"서울특별시", "경기도", "강원도", "충청도", "전라도", "경상도"};
+		JOptionPane.showMessageDialog(null, "test");
+		//처음에는 진원지와 서울 사이의 거리 값을 넣어주기
+		calcDistance = Math.pow(x-area[0][0], 2) + Math.pow(y-area[0][1], 2); 
+		for(int i=1;i<6;i++) {		//6개의 지역 비교
+			for(int j=0;j<2;j++) {
+				result = Math.pow(x-area[i][j], 2) + Math.pow(y-area[i][j+1], 2);
+				if(result < calcDistance) {		//값이 작을 경우, 즉 거리가 제일 가까운 경우
+					temp = calcDistance;
+					calcDistance = result;
+					result = temp;
+					shortArea = i;
+				}
+			}
+		}
+		JOptionPane.showMessageDialog(null, areaName[shortArea] + " 근처에서 지진이 발생하였습니다.");
+		System.out.println(areaName[shortArea] + " 근처에서 지진이 발생하였습니다.");
+	}
 
 	public static void main(String[] args) {
 		disaster2 ds = new disaster2(); 
