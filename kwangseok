@@ -77,7 +77,7 @@ public class disaster2 extends JFrame{
 					//기록물철의 경우 실제 데이터가 끝나는 Column지정
 					int nColumnEndIndex = sheet.getRow(2).getLastCellNum();
 
-					String szValue = "";
+					String szValue = "";//d
 
 					for( int i = nRowStartIndex; i <= nRowEndIndex ; i++)
 					{
