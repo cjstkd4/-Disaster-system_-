@@ -4,10 +4,14 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -17,6 +21,7 @@ import javax.sound.sampled.Clip;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -32,15 +37,31 @@ public class disaster2 extends JFrame{
 	private JLabel redLabel, blueLabel, blackLabel;		//원에 대한 설명 레이블
 	private JPanel pan;
 	String [][] location;		//엑셀에서 지역에 대한 좌표 정보를 받을 배열
+	String [] oneLocation;		//일차원배열로 받기
+	JButton b1,b2,b3,b4,b5,b6;
+	String fourway;
+	String []session_fourway;
+	double []street_fourway;
+	double result1, result2;
 	public static int shortArea;
+	public static Color color;
+	public static double []shortLocationX;
+	public static double []shortLocationY;
+	public static double calcstreet;
+	public static String calcFourway;
+	public static int testt=0;
+	public int calcroute=0;
 
 	public disaster2(){		//생성자
 		setTitle("지진관재 시스템");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 600);
-		setVisible(true);
+		//setVisible(true);
 		frameFlag = 1;
 		location = new String[180][3];
+		oneLocation = new String[540];
+		session_fourway = new String [100];
+		street_fourway = new double[100];
 
 		try {
 			// 사진은 아래 사진을 이용할것! 
@@ -100,11 +121,10 @@ public class disaster2 extends JFrame{
 							}
 
 							location[i][nColumn] = szValue;
-							System.out.print(location[i][nColumn]);
-							//System.out.print(szValue);
-							System.out.print("\t" );
+							//System.out.print("\t" ); 
+							//System.out.print(location[i][nColumn]);
 						}
-						System.out.println();
+						//System.out.println();
 					}
 				}
 				else
@@ -121,6 +141,15 @@ public class disaster2 extends JFrame{
 			e.printStackTrace();
 		}
 
+		//일차원 배열에 옮겨주기
+		int temp=0;
+		for(int i=0; i<180;i++) {
+			for(int j=0;j<3;j++) {
+				oneLocation[temp++] = location[i][j];
+				//System.out.println(oneLocation[temp-1]);
+			}
+		}
+
 		//지진 발생 버튼 (borderLayout을 이용)
 		add(new MyPanel(), BorderLayout.CENTER);
 		bt = new JButton("Earthquake Occur");
@@ -129,9 +158,10 @@ public class disaster2 extends JFrame{
 		blueLabel = new JLabel("● - 지역          ");
 		blackLabel = new JLabel("● - 지진관측소");
 
+		color = new Color(0xAA00BB55, true);
 		redLabel.setForeground(Color.RED);
 		blueLabel.setForeground(Color.BLUE);
-		blackLabel.setForeground(Color.BLACK);
+		blackLabel.setForeground(color);
 
 		bt.addActionListener(new ActionListener() {		//지진 발생 버튼 클릭 시
 			// Earthquake Occur가 눌렸을 때 액션
@@ -139,7 +169,7 @@ public class disaster2 extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// 버튼 클릭시 wav 재생
-				File file = new File("C:\\Users\\CHUCHU\\Desktop\\warring.wav");
+				File file = new File("C:\\Users\\DB\\Desktop\\warring.wav");
 				try {
 					AudioInputStream stream = AudioSystem.getAudioInputStream(file);
 					Clip clip = AudioSystem.getClip();
@@ -151,10 +181,10 @@ public class disaster2 extends JFrame{
 					e.printStackTrace();
 				}
 				earthquake++;
+
 				if(frameFlag == 1) {
 					SecondFrame sf = new SecondFrame();
 					repaint();
-					//distance();
 					frameFlag = 0;		//새로운 프레임 재생성 방지.
 				}
 
@@ -166,14 +196,163 @@ public class disaster2 extends JFrame{
 		pan.add(blackLabel);
 		add(pan, BorderLayout.NORTH);
 		pack();
+		// session 버튼
+		JPanel pan = new JPanel();
+		pan.setLayout(null);
+		// 시간
+		long time = System.currentTimeMillis();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 aa hh시 mm분 ");
+		String str = sdf.format(new Date(time));
 
+		// 지역
+		String []session = {"서울특별시", "경기도", "강원도", "충청도", "전라도", "경상도"};
+
+
+		// 서울특별시
+		b1 = new JButton("");
+		b1.addMouseListener(new MouseListener() {
+			// 마우스 이벤트시 필요한 조건이라 사용 말것
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			// 마우스가 올라갈때
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			// 마우스로 클릭할 때
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, str+SecondFrame.areaName[shortArea] +"지역 "+ calcFourway + " " + calcstreet + "km에서 규모 " + SecondFrame.powerStr + 
+						" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방송 청취 바랍니다.\n\n"
+						+ "현재 " + session[0] +" 지역으로부터 "+session_fourway[0]+ "으로 " + street_fourway[0]+"km 떨어져있습니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+
+		// 경기도
+		b2 = new JButton("");
+		b2.addMouseListener(new MouseListener() {
+			// 마우스 이벤트시 필요한 조건이라 사용 말것
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseReleased(MouseEvent e) {}		
+			// 마우스로 올라갈 때
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+			// 마우스가 클릭할 때
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, str+SecondFrame.areaName[shortArea] +"지역 "+ calcFourway + " " + calcstreet + "km에서 규모 " + SecondFrame.powerStr + 
+						" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방송 청취 바랍니다.\n\n"
+						+ "현재 " + session[1] +" 지역으로부터 "+session_fourway[1]+ "으로 " + street_fourway[1]+"km 떨어져있습니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+
+		//강원도
+		b3 = new JButton("");
+		b3.addMouseListener(new MouseListener() {			
+			@Override
+			public void mouseReleased(MouseEvent e) {}			
+			@Override
+			public void mousePressed(MouseEvent e) {}			
+			@Override
+			public void mouseExited(MouseEvent e) {}			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, str+SecondFrame.areaName[shortArea] +"지역 "+ calcFourway + " " + calcstreet + "km에서 규모 " + SecondFrame.powerStr + 
+						" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방송 청취 바랍니다\n\n"
+						+ "현재 " + session[2] +" 지역으로부터 "+session_fourway[2]+ "으로 " + street_fourway[2]+"km 떨어져있습니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+		b4 = new JButton("");
+		b4.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {}			
+			@Override
+			public void mousePressed(MouseEvent e) {}			
+			@Override
+			public void mouseExited(MouseEvent e) {}			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, str+SecondFrame.areaName[shortArea] +"지역 "+ calcFourway + " " + calcstreet + "km에서 규모 " + SecondFrame.powerStr + 
+						" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방송 청취 바랍니다.\n\n"
+						+ "현재 " + session[3] +" 지역으로부터 "+session_fourway[3]+ "으로 " + street_fourway[3]+"km 떨어져있습니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+		b5 = new JButton("");
+		b5.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {}			
+			@Override
+			public void mousePressed(MouseEvent e) {}			
+			@Override
+			public void mouseExited(MouseEvent e) {}			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, str+SecondFrame.areaName[shortArea] +"지역 "+ calcFourway + " " + calcstreet + "km에서 규모 " + SecondFrame.powerStr + 
+						" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방송 청취 바랍니다.\n\n"
+						+ "현재 " + session[4] +" 지역으로부터 "+session_fourway[4]+ "으로 " + street_fourway[4]+"km 떨어져있습니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+		b6 = new JButton("");
+		b6.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {}			
+			@Override
+			public void mousePressed(MouseEvent e) {}			
+			@Override
+			public void mouseExited(MouseEvent e) {}			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, str+SecondFrame.areaName[shortArea] +"지역 "+ calcFourway + " " + calcstreet + "km에서 규모 " + SecondFrame.powerStr + 
+						" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방송 청취 바랍니다.\n\n"
+						+ "현재 " + session[5] +" 지역으로부터 "+session_fourway[5]+ "으로 " + street_fourway[5]+"km 떨어져있습니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+
+		pan.add(b1);
+		pan.add(b2);
+		pan.add(b3);
+		pan.add(b4);
+		pan.add(b5);
+		pan.add(b6);
+		b1.setBounds(220, 145, 15, 15);	
+		b2.setBounds(250,205,15,15);
+		b3.setBounds(380,115,15,15);
+		b4.setBounds(270, 305, 15, 15);	
+		b5.setBounds(220, 485, 15, 15);
+		b6.setBounds(430, 395, 15, 15);
+		add(pan);
+		setVisible(true);
 	}
 
 	public Dimension getPreferredSize() {
 		if (img == null) {
 			return new Dimension(100,100); //그림 파일이 없을 경우 프레임의 크기를 100,100으로 만든다
 		} else {
-			return new Dimension(img.getWidth(null), img.getHeight(null)); 
+			return new Dimension(img.getWidth(null), img.getHeight(null));
 			//그림의 크기에 따라 화면의 크기를 변경한다.
 		}
 	}
@@ -183,12 +362,14 @@ public class disaster2 extends JFrame{
 		public void paint(Graphics g) {
 			g.drawImage(img, 0, 0, null);
 			//진원지
+			testt++;
 			if(earthquake>=1) {
 				int width = img.getWidth();			//프레임 가로 사이즈
 				int height = img.getHeight();		//프레임 세로 사이즈
 				Random ran = new Random();
 				x = ran.nextInt(width-40);		//width-40, height-120 해야 원 끝에 딱 걸림
 				y = ran.nextInt(height-120);
+
 				g.setColor(Color.RED);
 				g.fillOval(x, y, 20, 20);				
 				// 레이더
@@ -205,7 +386,6 @@ public class disaster2 extends JFrame{
 				g.drawOval(x-740,y-741, 1500, 1500);
 				g.drawOval(x-815,y-816, 1650, 1650);
 
-				//distance();		//거리 계산 함수 호출
 				//진원지의 좌표(x,y)
 				//Math.pow(3, 2)	//3의 2제곱 즉, 9
 				//순서대로 서울특별시, 경기도, 강원도, 충청도, 전라도, 경상도
@@ -224,7 +404,127 @@ public class disaster2 extends JFrame{
 					}
 				}
 
+				//oneLocation[0]->0,3,6,9...지역
+				//oneLocation[1]->1,4,7,10...x좌표
+				//oneLocation[2]->2,5,8,11...y좌표
+				//observatory 관측소
+				double []shortObservatory = new double[10];		//가장 짧은 거리의 관측소
+				shortLocationX = new double[50];		//가장 짧은 거리의 X좌표
+				shortLocationY = new double[50];		//가장 짧은 거리의 Y좌표
+				double []calcObservatory = new double[180];		//관측소 거리계산
+				double temp2=0;
+				for(int i=0;i<180;i++) {
+					calcObservatory[i] = Math.pow(x-(Double.valueOf(oneLocation[(i*3)+1]).doubleValue()) , 2)
+							+ Math.pow(y-(Double.valueOf(oneLocation[(i*3)+2]).doubleValue()) , 2);
+				}
+
+				for(int i=0;i<179;i++) {		//버블정렬
+					for(int j=0;j<179;j++) {
+						if(calcObservatory[j] > calcObservatory[j+1]) {		//오름차순
+							temp2 = calcObservatory[j];
+							calcObservatory[j] = calcObservatory[j+1];
+							calcObservatory[j+1] = temp2;
+						}
+					}
+				}
+
+				for(int i=0;i<10;i++) {		//낮은값 10개만 집어넣기
+					shortObservatory[i] = calcObservatory[i];
+					//System.out.println(shortObservatory[i]);
+				}
+
+				int temp3=0;
+				for(int i=0;i<180;i++) {
+					for(int j=0;j<10;j++) {
+						if( ( Math.pow(x-(Double.valueOf(oneLocation[(i*3)+1]).doubleValue()) , 2)
+								+ Math.pow(y-(Double.valueOf(oneLocation[(i*3)+2]).doubleValue()) , 2) )
+								== shortObservatory[j] ) {
+							shortLocationX[temp3] = Double.valueOf(oneLocation[(i*3)+1]).doubleValue();
+							shortLocationY[temp3] = Double.valueOf(oneLocation[(i*3)+2]).doubleValue();
+							temp3++;
+						}
+					}
+				}
+				if(testt>=2) {
+					//관측소
+					for(int i=0;i<10;i++) {
+						g.setColor(color);
+						g.fillOval((int)shortLocationX[i], (int)shortLocationY[i], 13, 13);
+						/*try {
+							Thread.sleep(500);
+							System.out.println("test");
+
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}*/
+					}
+				}
+
+				/*for(int i=0;i<10;i++) {
+					System.out.print(shortLocationX[i]);
+					System.out.print("\t");
+					System.out.print(shortLocationY[i]);
+					System.out.println();
+				}*/
+				// 4방위 코드
+				for(int i=0;i<6;i++) {
+					// 결과
+					result1 = x - area[i][0];
+					result2 = y - area[i][1];
+
+					if( x < area[i][0] && (-50<=result2 && result2<=50 )) {
+						fourway = "서쪽";					
+					} else if( x > area[i][0] && (-50<=result2 && result2<=50)){
+						fourway = "동쪽";					
+					} else if(y < area[i][1] && (-50<=result1 && result1<=50 )) {
+						fourway = "북쪽";						
+					} else if(y>area[i][1]  && (-50<=result1 && result1<=50 )){
+						fourway = "남쪽";
+					} else if( x < area[i][0] && y < area[i][1] ) {
+						fourway = "서북쪽";					
+					} else if(  x < area[i][0] && y>area[i][1] ) {
+						fourway = "서남쪽";					
+					} else if(  x > area[i][0]&& y < area[i][1] )  {
+						fourway = "동북쪽";					
+					} else if( x > area[i][0] && y>area[i][1])  {
+						fourway = "동남쪽";					
+					}
+					session_fourway[i] = fourway;
+					// 거리 계산
+					calcDistance = Math.pow(x-area[i][0], 2) + Math.pow(y-area[i][1], 2);
+					calcroute = (int)Math.sqrt(calcDistance);
+					calcstreet = calcroute;
+					street_fourway[i] = calcstreet;
+				}
+				//SecondFrame.java에 들어가는 4방위
+				double result1 = x - area[shortArea][0];
+				double result2 = y - area[shortArea][1];
+				if( x < area[shortArea][0] && (-50<=result2 && result2<=50 )) {
+					calcFourway = "서쪽";					
+				} else if( x > area[shortArea][0] && (-50<=result2 && result2<=50)){
+					calcFourway = "동쪽";					
+				} else if(y < area[shortArea][1] && (-50<=result1 && result1<=50 )) {
+					calcFourway = "북쪽";					
+				} else if(y>area[shortArea][1]  && (-50<=result1 && result1<=50 )){
+					calcFourway = "남쪽";
+				} else if( x < area[shortArea][0] && y < area[shortArea][1] ) {
+					calcFourway = "서북쪽";					
+				} else if(  x < area[shortArea][0] && y>area[shortArea][1] ) {
+					calcFourway = "서남쪽";
+				} else if(  x > area[shortArea][0]&& y < area[shortArea][1] )  {
+					calcFourway = "동북쪽";
+				} else if( x > area[shortArea][0] && y>area[shortArea][1])  {
+					calcFourway = "동남쪽";
+				}
+				// 거리 계산
+				calcDistance = Math.pow(x-area[shortArea][0], 2) + Math.pow(y-area[shortArea][1], 2);
+				calcroute = (int)Math.sqrt(calcDistance);
+
+				calcstreet = calcroute;
+
 			}
+
 
 			// 서울특별시
 			g.setColor(Color.BLUE);
@@ -273,7 +573,6 @@ public class disaster2 extends JFrame{
 				shortArea = i;
 			}
 		}
-		JOptionPane.showMessageDialog(null, areaName[shortArea] + " 근처에서 지진이 발생하였습니다.");
 	}*/
 
 	public static void main(String[] args) {
