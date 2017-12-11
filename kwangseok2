@@ -1,5 +1,4 @@
-package test;
-
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,15 +10,17 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class SecondFrame extends JFrame{
 	private JLabel powerLabel;				//규모 레이블
 	private JTextField powerTextField;		//규모 텍스트필드
 	private JButton powerButton;			//규모 버튼
-	public String powerStr;			//규모가 입력된 텍스트
-	public static int alarmFlag = 0;
-	String []areaName = {"서울특별시", "경기도", "강원도", "충청도", "전라도", "경상도"};
+	public static String powerStr;			//규모가 입력된 텍스트
+	boolean drawcolor = true;
+	public static String []areaName = {"서울특별시", "경기도", "강원도", "충청도", "전라도", "경상도"};
+	Graphics g;
 
 	public SecondFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		//창닫기
@@ -40,7 +41,6 @@ public class SecondFrame extends JFrame{
 		powerLabel.setBounds(20, 40, 70, 25);
 		powerTextField.setBounds(85, 40, 150, 25);
 		powerButton.setBounds(240, 40, 60, 25);
-		//getContentPane().setBackground(Color.white);
 
 		powerTextField.addKeyListener(new KeyListener() {
 
@@ -73,7 +73,7 @@ public class SecondFrame extends JFrame{
 				long time = System.currentTimeMillis();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 aa hh시 mm분 ");
 				String str = sdf.format(new Date(time));
-				
+
 				if(powerStr.equals("")) {
 					JOptionPane.showMessageDialog(null,"규모를 입력해주세요.");
 				}
@@ -81,11 +81,13 @@ public class SecondFrame extends JFrame{
 					JOptionPane.showMessageDialog(null, "규모는 " + powerStr +"입니다.", "규모 메시지 창", JOptionPane.WARNING_MESSAGE, null);
 					disaster2.frameFlag = 1;		//다시 프레임을 켤 수 있도록
 					JOptionPane.showMessageDialog(null, str+areaName[disaster2.shortArea] +"지역 "+ disaster2.calcFourway + " " + disaster2.calcstreet + "km에서 규모 " + powerStr + 
-							" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방속 청취 바랍니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+							" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방송 청취 바랍니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+					
 					dispose();
 				}
 			}
 
 		});
 	}
+
 }
