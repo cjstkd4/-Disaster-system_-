@@ -1,3 +1,5 @@
+package test;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -78,8 +80,8 @@ public class SecondFrame extends JFrame{
 				else {
 					JOptionPane.showMessageDialog(null, "규모는 " + powerStr +"입니다.", "규모 메시지 창", JOptionPane.WARNING_MESSAGE, null);
 					disaster2.frameFlag = 1;		//다시 프레임을 켤 수 있도록
-					JOptionPane.showMessageDialog(null, str+areaName[disaster2.shortArea] +"지역 "+ disaster2.calcFourway + " 00 km에서 규모 " + powerStr + 
-							" 지진이\n발생햇습니다. 여진 대비 TV, 라디오등 재난 방속 청취 바랍니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, str+areaName[disaster2.shortArea] +"지역 "+ disaster2.calcFourway + " " + disaster2.calcstreet + "km에서 규모 " + powerStr + 
+							" 지진이\n발생했습니다. 여진 대비 TV, 라디오 등 재난 방속 청취 바랍니다.", "진원지 메시지 창", JOptionPane.WARNING_MESSAGE);
 					dispose();
 				}
 			}
