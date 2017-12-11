@@ -1,5 +1,4 @@
 package test;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,26 +17,19 @@ import javax.sound.sampled.Clip;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-/*import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;*/
 
 public class disaster2 extends JFrame{
 	BufferedImage img = null;
-	public int x, y, earthquake = 0;
+	public static int x, y, earthquake = 0;
 	public static int frameFlag = 0;		//frameFlag : 프레임을 1개만 생성해주기위한 플래그
 	private JButton bt;			//지진 발생 버튼
 	private JLabel redLabel, blueLabel, blackLabel;		//원에 대한 설명 레이블
 	private JPanel pan;
 	String [][] location;		//엑셀에서 지역에 대한 좌표 정보를 받을 배열
-	/*private JLabel powerLabel;			//강도 레이블
-	private JTextField powerTextField;		//강도 텍스트필드
-	private JButton powerButton;			//강도 버튼
-	 */	
+	String fourway;
+	public static String calcFourway;
+	public static int shortArea;
 
 	public disaster2(){		//생성자
 		setTitle("지진관재 시스템");
@@ -65,32 +57,31 @@ public class disaster2 extends JFrame{
 		redLabel.setForeground(Color.RED);
 		blueLabel.setForeground(Color.BLUE);
 		blackLabel.setForeground(Color.BLACK);
-		
+
 		bt.addActionListener(new ActionListener() {		//지진 발생 버튼 클릭 시
 			// Earthquake Occur가 눌렸을 때 액션
 			// 끝 점 확인 ( x = 628 y = 785)
 			@Override
-			public void actionPerformed(ActionEvent arg0) {		
+			public void actionPerformed(ActionEvent arg0) {
 				// 버튼 클릭시 wav 재생
 				File file = new File("C:\\Users\\CHUCHU\\Desktop\\warring.wav");
 				try {
 					AudioInputStream stream = AudioSystem.getAudioInputStream(file);
-		            Clip clip = AudioSystem.getClip();
-		            clip.open(stream);
-		            clip.start();
-		            
-		        } catch(Exception e) {
-		            
-		            e.printStackTrace();
-		        }
+					Clip clip = AudioSystem.getClip();
+					clip.open(stream);
+					clip.start();
+
+				} catch(Exception e) {
+
+					e.printStackTrace();
+				}
 				earthquake++;
-				//JOptionPane.showMessageDialog(null, width);
 				if(frameFlag == 1) {
 					SecondFrame sf = new SecondFrame();
 					repaint();
-					distance();//거리 계산 함수 호출					
-					frameFlag = 0;		//새로운 프레임 재생성 방지.					
-				}				
+					frameFlag = 0;		//새로운 프레임 재생성 방지.
+				}
+
 			}
 		});
 		add(bt, BorderLayout.SOUTH);
@@ -101,7 +92,6 @@ public class disaster2 extends JFrame{
 		pack();
 
 	}
-
 
 	public Dimension getPreferredSize() {
 		if (img == null) {
@@ -121,11 +111,11 @@ public class disaster2 extends JFrame{
 				int width = img.getWidth();			//프레임 가로 사이즈
 				int height = img.getHeight();		//프레임 세로 사이즈
 				Random ran = new Random();
-				x = ran.nextInt(width-40);		//width-40, height-90 해야 원 끝에 딱 걸림
-				y = ran.nextInt(height-90);
+				x = ran.nextInt(width-40);		//width-40, height-120 해야 원 끝에 딱 걸림
+				y = ran.nextInt(height-120);
+				System.out.println("x : "+x +" y : "+ y);
 				g.setColor(Color.RED);
 				g.fillOval(x, y, 20, 20);				
-				System.out.printf("진원지 : %d %d\n\n", x,y);
 				// 레이더
 				g.setColor(Color.RED);
 				g.drawOval(x-65, y-66, 150, 150);
@@ -139,6 +129,94 @@ public class disaster2 extends JFrame{
 				g.drawOval(x-665,y-666, 1350, 1350);
 				g.drawOval(x-740,y-741, 1500, 1500);
 				g.drawOval(x-815,y-816, 1650, 1650);
+				
+				//진원지의 좌표(x,y)
+				//Math.pow(3, 2)	//3의 2제곱 즉, 9
+				//순서대로 서울특별시, 경기도, 강원도, 충청도, 전라도, 경상도
+				double [][]area = { {220, 145}, {250, 205}, {380, 115}, {270, 305}, {220, 485}, {430, 395} };
+				String []session = {"서울특별시", "경기도", "강원도", "충청도", "전라도", "경상도"};
+				double calcDistance, result, temp = 0;	//calcDistance:최단거리, result:비교해줄 거리, temp:임시저장
+				shortArea = 0;		//가장 짧은 거리의 도시
+				//처음에는 진원지와 서울 사이의 거리 값을 넣어주기
+				calcDistance = Math.pow(x-area[0][0], 2) + Math.pow(y-area[0][1], 2);
+				for(int i=1;i<6;i++) {		//6개의 지역 비교
+					result = Math.pow(x-area[i][0], 2) + Math.pow(y-area[i][1], 2);
+					if(result < calcDistance) {		//값이 작을 경우, 즉 거리가 제일 가까운 경우
+						temp = calcDistance;
+						calcDistance = result;
+						result = temp;
+						shortArea = i;
+					}
+				}
+				// 4방위 코드
+				/*for(int i=0;i<6;i++) {
+					// 지역 출력
+					System.out.println(session[i]);
+					// 결과
+					double result1 = x - area[i][0];
+					double result2 = y - area[i][1];
+					
+					System.out.println(result1);
+					System.out.println(result2);
+					
+					// 4방위
+					if( x < area[i][0] && (-50<=result2 && result2<=50 )) {
+						fourway = "서쪽";
+						System.out.println(fourway);
+						
+					} else if( x > area[i][0] && (-50<=result2 && result2<=50)){
+						fourway = "동쪽";
+						System.out.println(fourway);
+						
+					} else if(y < area[i][1] && (-50<=result1 && result1<=50 )) {
+						fourway = "북쪽";
+						System.out.println(fourway);
+						
+					} else if(y>area[i][1]  && (-50<=result1 && result1<=50 )){
+						fourway = "남쪽";
+						System.out.println(fourway);
+					} else if( x < area[i][0] && y < area[i][1] ) {
+						fourway = "서북쪽";
+						System.out.println(fourway);
+						
+					} else if(  x < area[i][0] && y>area[i][1] ) {
+						fourway = "서남쪽";
+						System.out.println(fourway);
+						
+					} else if(  x > area[i][0]&& y < area[i][1] )  {
+						fourway = "동북쪽";
+						System.out.println(fourway);
+						
+					} else if( x > area[i][0] && y>area[i][1])  {
+						fourway = "동남쪽";
+						System.out.println(fourway);
+						
+					}
+					
+					
+					System.out.println("----------------");
+				}*/
+				
+				//SecondFrame.java에 들어가는 4방위
+				double result1 = x - area[shortArea][0];
+				double result2 = y - area[shortArea][1];
+				if( x < area[shortArea][0] && (-50<=result2 && result2<=50 )) {
+					calcFourway = "서쪽";					
+				} else if( x > area[shortArea][0] && (-50<=result2 && result2<=50)){
+					calcFourway = "동쪽";					
+				} else if(y < area[shortArea][1] && (-50<=result1 && result1<=50 )) {
+					calcFourway = "북쪽";					
+				} else if(y>area[shortArea][1]  && (-50<=result1 && result1<=50 )){
+					calcFourway = "남쪽";
+				} else if( x < area[shortArea][0] && y < area[shortArea][1] ) {
+					calcFourway = "서북쪽";					
+				} else if(  x < area[shortArea][0] && y>area[shortArea][1] ) {
+					calcFourway = "서남쪽";
+				} else if(  x > area[shortArea][0]&& y < area[shortArea][1] )  {
+					calcFourway = "동북쪽";
+				} else if( x > area[shortArea][0] && y>area[shortArea][1])  {
+					calcFourway = "동남쪽";
+				}
 			}
 
 			// 서울특별시
@@ -164,33 +242,10 @@ public class disaster2 extends JFrame{
 			// 경상도
 			g.setColor(Color.BLUE);
 			g.fillOval(430, 395, 15, 15);
+
 		}
-		
 	}
-	public void distance() {		//진원지와 도시 사이 거리계산
-		//진원지의 좌표(x,y)
-		//Math.pow(3, 2)	//3의 2제곱 즉, 9
-		//순서대로 서울특별시, 경기도, 강원도, 충청도, 전라도, 경상도
-		double [][]area = { {220, 145}, {250, 205}, {380, 115}, {270, 305}, {220, 485}, {430, 395} };
-		double calcDistance, result, temp = 0;
-		int shortArea = 0;		//가장 짧은 거리의 도시
-		String []areaName = {"서울특별시", "경기도", "강원도", "충청도", "전라도", "경상도"};
-		JOptionPane.showMessageDialog(null, "3번 x"+x+"y"+y);
-		System.out.println("distance 안 = x : " + x + " y : " + y);
-		//처음에는 진원지와 서울 사이의 거리 값을 넣어주기
-		calcDistance = Math.pow(x-area[0][0], 2) + Math.pow(y-area[0][1], 2); 
-		for(int i=1;i<6;i++) {		//6개의 지역 비교
-			result = Math.pow(x-area[i][0], 2) + Math.pow(y-area[i][1], 2);
-			if(result < calcDistance) {		//값이 작을 경우, 즉 거리가 제일 가까운 경우
-				temp = calcDistance;
-				calcDistance = result;
-				result = temp;
-				shortArea = i;
-			}
-		}
-		JOptionPane.showMessageDialog(null, areaName[shortArea] + " 근처에서 지진이 발생하였습니다.");
-		System.out.println(areaName[shortArea] + " 근처에서 지진이 발생하였습니다.");
-	}
+
 	public static void main(String[] args) {
 		disaster2 ds = new disaster2(); 
 	}
